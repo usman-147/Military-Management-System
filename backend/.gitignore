@@ -31,3 +31,17 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# IDE/editor-specific
+*.iml
+.classpath
+.project
+.settings/
+.vscode/
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
