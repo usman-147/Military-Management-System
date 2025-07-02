@@ -28,9 +28,11 @@ public class AssetController {
         return assetService.getAssetById(id);
     }
 
-    @GetMapping("/base/{base}")
-    public List<Asset> getAssetsByBase(@PathVariable String base) {
-        return assetService.getAssetsByBase(base);
+    @GetMapping("/baseLocation/{baseLocation}")
+    public List<Asset> getAssetsByBase(@PathVariable String baseLocation) {
+        System.out.println("Requested base: " + baseLocation);
+        return assetService.getAssetsByBase(baseLocation);
+
     }
 
     @GetMapping("/type/{type}")
