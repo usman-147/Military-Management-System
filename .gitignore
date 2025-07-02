@@ -1,0 +1,18 @@
+# Java / Maven
+target/
+*.class
+*.jar
+
+# Spring Boot specific
+spring-boot-devtools.properties
+spring-boot-starter-*.jar
+
+# VS Code
+.vscode/
+
+# Node (for your React frontend)
+node_modules/
+build/
+
+# Environment files
+.env
