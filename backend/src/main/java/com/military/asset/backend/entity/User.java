@@ -1,4 +1,5 @@
 package com.military.asset.backend.entity;
+import com.military.asset.backend.enums.Role;
 
 import jakarta.persistence.*;
 

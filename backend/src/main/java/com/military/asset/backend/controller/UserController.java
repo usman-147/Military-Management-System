@@ -1,7 +1,7 @@
 package com.military.asset.backend.controller;
 
 import com.military.asset.backend.entity.User;
-import com.military.asset.backend.entity.Role;
+import com.military.asset.backend.enums.Role;
 import com.military.asset.backend.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -51,7 +51,7 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
+        userService.deleteUserById(id);
         return ResponseEntity.ok("User with ID " + id + " deleted.");
     }
 
