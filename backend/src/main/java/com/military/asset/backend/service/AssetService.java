@@ -24,12 +24,20 @@ public class AssetService {
         return assetRepository.findById(id);
     }
 
-    public List<Asset> getAssetsByBase(String baseLocation) {
+    public List<Asset> getAssetsByBaseLocation(String baseLocation) {
         return assetRepository.findByBaseLocation(baseLocation);
     }
 
     public List<Asset> getAssetsByType(String type) {
         return assetRepository.findByType(type);
+    }
+
+    public List<Asset> getAssetsByName(String name) {
+    return assetRepository.findByName(name);
+    }
+
+    public List<Asset> getAssetsByQuantity(int quantity) {
+    return assetRepository.findByQuantity(quantity);
     }
 
     public Asset createAsset(Asset asset) {
