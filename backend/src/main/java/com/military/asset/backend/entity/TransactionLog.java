@@ -19,17 +19,6 @@ public class TransactionLog {
     private String username;
     private LocalDateTime timestamp;
 
-    public TransactionLog() {}
-
-    public TransactionLog(String action, Long assetId, Long baseId, int quantity, String username, LocalDateTime timestamp) {
-        this.action = action;
-        this.assetId = assetId;
-        this.baseId = baseId;
-        this.quantity = quantity;
-        this.username = username;
-        this.timestamp = timestamp;
-    }
-
     public Long getId() {
         return id;
     }
