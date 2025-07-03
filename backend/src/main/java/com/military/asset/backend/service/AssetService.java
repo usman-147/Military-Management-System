@@ -49,6 +49,11 @@ public class AssetService {
     }
 
     public Asset createAsset(Asset asset) {
+        if (asset.getBase() != null && asset.getBase().getId() != null) {
+            Base base = baseRepository.findById(asset.getBase().getId())
+                    .orElseThrow(() -> new RuntimeException("Base not found with id: " + asset.getBase().getId()));
+            asset.setBase(base);
+        }
         return assetRepository.save(asset);
     }
 

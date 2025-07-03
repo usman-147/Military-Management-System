@@ -1,5 +1,7 @@
 package com.military.asset.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -16,6 +18,7 @@ public class Asset {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "base_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Base base;
 
     public Asset() {}
