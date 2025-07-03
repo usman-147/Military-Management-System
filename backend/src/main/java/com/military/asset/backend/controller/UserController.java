@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/users")
@@ -52,5 +53,25 @@ public class UserController {
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.ok("User with ID " + id + " deleted.");
+    }
+
+    @DeleteMapping("/username/{username}")
+    public ResponseEntity<String> deleteByUsername(@PathVariable String username) {
+        Optional<User> user = userService.getUserByUsername(username);
+        if (user.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        userService.deleteByUsername(username);
+        return ResponseEntity.ok("Deleted user with username: " + username);
+    }
+
+    @DeleteMapping("/role/{role}")
+    public ResponseEntity<String> deleteByRole(@PathVariable Role role) {
+        List<User> users = userService.getUsersByRole(role);
+        if (users.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        userService.deleteByRole(role);
+        return ResponseEntity.ok("Deleted " + users.size() + " user(s) with role: " + role);
     }
 }

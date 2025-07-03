@@ -41,4 +41,14 @@ public class UserService {
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }
+
+    public void deleteByUsername(String username) {
+        Optional<User> user = userRepository.findByUsername(username);
+        user.ifPresent(userRepository::delete);
+    }
+
+    public void deleteByRole(Role role) {
+        List<User> users = userRepository.findByRole(role);
+        userRepository.deleteAll(users);
+    }
 }
