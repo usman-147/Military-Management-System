@@ -2,7 +2,6 @@ package com.military.asset.backend.controller;
 
 import com.military.asset.backend.entity.Asset;
 import com.military.asset.backend.service.AssetService;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,11 +40,9 @@ public class AssetController {
         return assetService.getAssetById(id);
     }
 
-    @GetMapping("/baseLocation/{baseLocation}")
-    public List<Asset> getAssetsByBaseLocation(@PathVariable String baseLocation) {
-        System.out.println("Requested base: " + baseLocation);
-        return assetService.getAssetsByBaseLocation(baseLocation);
-
+    @GetMapping("/base/{baseName}")
+    public List<Asset> getAssetsByBase(@PathVariable String baseName) {
+        return assetService.getAssetsByBaseName(baseName);
     }
 
     @GetMapping("/type/{type}")
@@ -55,12 +52,12 @@ public class AssetController {
 
     @GetMapping("/name/{name}")
     public List<Asset> getAssetsByName(@PathVariable String name) {
-    return assetService.getAssetsByName(name);
+        return assetService.getAssetsByName(name);
     }
 
     @GetMapping("/quantity/{quantity}")
     public List<Asset> getAssetsByQuantity(@PathVariable int quantity) {
-    return assetService.getAssetsByQuantity(quantity);
+        return assetService.getAssetsByQuantity(quantity);
     }
 
     @PostMapping
@@ -103,14 +100,13 @@ public class AssetController {
         return ResponseEntity.ok("Deleted " + assets.size() + " asset(s) with quantity: " + quantity);
     }
 
-    @DeleteMapping("/baseLocation/{baseLocation}")
-    public ResponseEntity<String> deleteByBaseLocation(@PathVariable String baseLocation) {
-        List<Asset> assets = assetService.findByBaseLocation(baseLocation);
-        if (assets.isEmpty()) {
-            return ResponseEntity.notFound().build();
+    @DeleteMapping("/base/{baseName}")
+    public ResponseEntity<String> deleteByBase(@PathVariable String baseName) {
+        try {
+            assetService.deleteByBaseName(baseName);
+            return ResponseEntity.ok("Deleted asset(s) from base: " + baseName);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
-        assetService.deleteAll(assets);
-        return ResponseEntity.ok("Deleted " + assets.size() + " asset(s) from base: " + baseLocation);
     }
-
 }

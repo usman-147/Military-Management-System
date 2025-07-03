@@ -14,19 +14,19 @@ public class Asset {
     private String name; // e.g., "AK-47", "T-90", "5.56mm"
     private int quantity;
 
-    private String baseLocation; // We'll replace with @ManyToOne relation later
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "base_id")
+    private Base base;
 
-    // === Constructors ===
     public Asset() {}
 
-    public Asset(String type, String name, int quantity, String baseLocation) {
+    public Asset(String type, String name, int quantity, Base base) {
         this.type = type;
         this.name = name;
         this.quantity = quantity;
-        this.baseLocation = baseLocation;
+        this.base = base;
     }
 
-    // === Getters & Setters ===
     public Long getId() { return id; }
 
     public String getType() { return type; }
@@ -38,6 +38,6 @@ public class Asset {
     public int getQuantity() { return quantity; }
     public void setQuantity(int quantity) { this.quantity = quantity; }
 
-    public String getBaseLocation() { return baseLocation; }
-    public void setBaseLocation(String baseLocation) { this.baseLocation = baseLocation; }
+    public Base getBase() { return base; }
+    public void setBase(Base base) { this.base = base; }
 }
