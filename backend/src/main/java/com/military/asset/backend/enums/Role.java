@@ -1,4 +1,4 @@
-package com.military.asset.backend.entity;
+package com.military.asset.backend.enums;
 
 public enum Role {
     ADMIN,
