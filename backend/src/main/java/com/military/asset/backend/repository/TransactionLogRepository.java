@@ -9,7 +9,10 @@ import java.util.List;
 
 @Repository
 public interface TransactionLogRepository extends JpaRepository<TransactionLog, Long> {
-    List<TransactionLog> findByUser(String user);
-    List<TransactionLog> findByOperation(String operation);
+    List<TransactionLog> findByUsername(String username);
+    List<TransactionLog> findByAction(String action);
+    List<TransactionLog> findByAssetId(Long assetId);
+    List<TransactionLog> findByBaseId(Long baseId);
+    List<TransactionLog> findByQuantity(int quantity);
     List<TransactionLog> findByTimestampBetween(LocalDateTime start, LocalDateTime end);
 }
