@@ -36,4 +36,9 @@ public class User {
 
     public Role getRole() { return role; }
     public void setRole(Role role) { this.role = role; }
+
+    public String getSpringRole() {
+        return "ROLE_" + role.name();
+    }
+
 }
