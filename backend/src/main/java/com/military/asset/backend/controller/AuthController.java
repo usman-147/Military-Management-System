@@ -3,6 +3,7 @@ package com.military.asset.backend.controller;
 import com.military.asset.backend.entity.User;
 import com.military.asset.backend.service.UserService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -13,9 +14,11 @@ import java.util.Optional;
 public class AuthController {
 
     private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
 
-    public AuthController(UserService userService) {
+    public AuthController(UserService userService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping("/login")
@@ -24,7 +27,7 @@ public class AuthController {
 
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            if (user.getPassword().equals(password)) {
+            if (passwordEncoder.matches(password, user.getPassword())) {
                 return ResponseEntity.ok("Login successful. Role: " + user.getRole());
             } else {
                 return ResponseEntity.status(401).body("Invalid password");
