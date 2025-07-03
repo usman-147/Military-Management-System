@@ -3,6 +3,8 @@ package com.military.asset.backend.controller;
 import com.military.asset.backend.entity.Asset;
 import com.military.asset.backend.service.AssetService;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +20,15 @@ public class AssetController {
 
     public AssetController(AssetService assetService) {
         this.assetService = assetService;
+    }
+
+    @RequestMapping(method = RequestMethod.OPTIONS)
+    public ResponseEntity<?> handleOptions() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Access-Control-Allow-Origin", "*");
+        headers.add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
+        headers.add("Access-Control-Allow-Headers", "Content-Type, Authorization");
+        return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
     @GetMapping
