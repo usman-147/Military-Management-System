@@ -1,15 +1,15 @@
 package com.military.asset.backend.logging;
 
 import com.military.asset.backend.entity.TransactionLog;
-import com.military.asset.backend.enums.Role;
 import com.military.asset.backend.repository.TransactionLogRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.time.LocalDateTime;
 
@@ -18,28 +18,46 @@ import java.time.LocalDateTime;
 public class LoggingAspect {
 
     private final TransactionLogRepository logRepository;
-    private final HttpServletRequest request;
 
-    public LoggingAspect(TransactionLogRepository logRepository, HttpServletRequest request) {
+    public LoggingAspect(TransactionLogRepository logRepository) {
         this.logRepository = logRepository;
-        this.request = request;
     }
 
-    @AfterReturning("execution(* com.military.asset.backend.controller..*(..))")
-    public void logAfter(JoinPoint joinPoint) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    @Pointcut("execution(* com.military.asset.backend.controller.*.*(..))")
+    public void controllerMethods() {
+    }
 
-        if (auth != null && auth.isAuthenticated()) {
-            String username = auth.getName();
-            String endpoint = request.getRequestURI();
-            String method = request.getMethod();
+    @AfterReturning("controllerMethods()")
+    public void logTransaction(JoinPoint joinPoint) {
+        ServletRequestAttributes attrs = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if (attrs == null) return;
 
-            TransactionLog log = new TransactionLog();
-            log.setUser(username);
-            log.setOperation(method + " " + endpoint);
-            log.setTimestamp(LocalDateTime.now());
+        HttpServletRequest request = attrs.getRequest();
+        String uri = request.getRequestURI();
 
-            logRepository.save(log);
-        }
+        // Determine action from URI
+        String action = getActionFromUri(uri);
+
+        // Skip logging if not one of the expected actions
+        if (action == null) return;
+
+        // Extract sample data (in real use, this should come from args or context)
+        TransactionLog log = new TransactionLog();
+        log.setAction(action);
+        log.setUsername(request.getUserPrincipal() != null ? request.getUserPrincipal().getName() : "anonymous");
+        log.setAssetId(0L); // Default or extracted from args
+        log.setBaseId(0L);  // Default or extracted from args
+        log.setQuantity(0); // Default or extracted from args
+        log.setTimestamp(LocalDateTime.now());
+
+        logRepository.save(log);
+    }
+
+    private String getActionFromUri(String uri) {
+        if (uri.contains("/purchases")) return "PURCHASE";
+        if (uri.contains("/transfers")) return "TRANSFER";
+        if (uri.contains("/assignments")) return "ASSIGN";
+        if (uri.contains("/expenditures")) return "EXPEND";
+        return null;
     }
 }
