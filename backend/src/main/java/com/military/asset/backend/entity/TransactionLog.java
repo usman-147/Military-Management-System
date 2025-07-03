@@ -12,12 +12,27 @@ public class TransactionLog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String action; // PURCHASE, TRANSFER, ASSIGN, EXPEND
+
+    @Column(nullable = false)
     private Long assetId;
+
+    @Column(nullable = false)
     private Long baseId;
+
+    @Column(nullable = false)
     private int quantity;
+
+    @Column(nullable = false)
     private String username;
+
     private LocalDateTime timestamp;
+
+    @PrePersist
+    public void onCreate() {
+        this.timestamp = LocalDateTime.now();
+    }
 
     public Long getId() {
         return id;
