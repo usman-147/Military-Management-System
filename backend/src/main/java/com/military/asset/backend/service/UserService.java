@@ -3,6 +3,9 @@ package com.military.asset.backend.service;
 import com.military.asset.backend.entity.User;
 import com.military.asset.backend.enums.Role;
 import com.military.asset.backend.repository.UserRepository;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +13,19 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+
+        return org.springframework.security.core.userdetails.User
+                .withUsername(user.getUsername())
+                .password(user.getPassword()) // hashed password from DB
+                .roles(user.getRole().name()) // uses ENUM: ADMIN, BASE_COMMANDER, etc.
+                .build();
+    }
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;

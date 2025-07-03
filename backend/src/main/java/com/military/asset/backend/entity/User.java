@@ -11,6 +11,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true, nullable = false)
     private String username;
 
     private String password;
@@ -40,5 +41,4 @@ public class User {
     public String getSpringRole() {
         return "ROLE_" + role.name();
     }
-
 }
