@@ -1,5 +1,7 @@
 package com.military.asset.backend.entity;
 
-public class Role {
-
+public enum Role {
+    ADMIN,
+    BASE_COMMANDER,
+    LOGISTICS_OFFICER
 }
