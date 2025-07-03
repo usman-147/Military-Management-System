@@ -2,6 +2,7 @@ package com.military.asset.backend.controller;
 
 import com.military.asset.backend.entity.TransactionLog;
 import com.military.asset.backend.service.TransactionLogService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,24 +38,41 @@ public class TransactionLogController {
     }
 
     @GetMapping("/{id}")
-    public Optional<TransactionLog> getLogById(@PathVariable Long id) {
-        return transactionLogService.getLogById(id);
+    public ResponseEntity<TransactionLog> getLogById(@PathVariable Long id) {
+        Optional<TransactionLog> log = transactionLogService.getLogById(id);
+        return log.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/user/{user}")
-    public List<TransactionLog> getLogsByUser(@PathVariable String user) {
-        return transactionLogService.getLogsByUser(user);
+    @GetMapping("/by-username/{username}")
+    public List<TransactionLog> getLogsByUsername(@PathVariable String username) {
+        return transactionLogService.getLogsByUsername(username);
     }
 
-    @GetMapping("/operation/{operation}")
-    public List<TransactionLog> getLogsByOperation(@PathVariable String operation) {
-        return transactionLogService.getLogsByOperation(operation);
+    @GetMapping("/by-action/{action}")
+    public List<TransactionLog> getLogsByAction(@PathVariable String action) {
+        return transactionLogService.getLogsByAction(action);
     }
 
-    @GetMapping("/timestamp/{timestamp}")
-    public List<TransactionLog> getLogsByTimestamp(@PathVariable String timestamp) {
-        LocalDateTime parsedTimestamp = LocalDateTime.parse(timestamp);
-        return transactionLogService.getLogsBetweenTimestamps(parsedTimestamp, parsedTimestamp);
+    @GetMapping("/by-asset/{assetId}")
+    public List<TransactionLog> getLogsByAssetId(@PathVariable Long assetId) {
+        return transactionLogService.getLogsByAssetId(assetId);
+    }
+
+    @GetMapping("/by-base/{baseId}")
+    public List<TransactionLog> getLogsByBaseId(@PathVariable Long baseId) {
+        return transactionLogService.getLogsByBaseId(baseId);
+    }
+
+    @GetMapping("/by-quantity/{quantity}")
+    public List<TransactionLog> getLogsByQuantity(@PathVariable int quantity) {
+        return transactionLogService.getLogsByQuantity(quantity);
+    }
+
+    @GetMapping("/by-timestamp")
+    public List<TransactionLog> getLogsBetweenTimestamps(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end) {
+        return transactionLogService.getLogsBetweenTimestamps(start, end);
     }
 
     @PostMapping
@@ -63,26 +81,45 @@ public class TransactionLogController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteLogById(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteLogById(@PathVariable Long id) {
         transactionLogService.deleteLogById(id);
+        return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/user/{user}")
-    public ResponseEntity<String> deleteByUser(@PathVariable String user) {
-        transactionLogService.deleteByUser(user);
-        return ResponseEntity.ok("Deleted logs for user: " + user);
+    @DeleteMapping("/by-username/{username}")
+    public ResponseEntity<Void> deleteByUsername(@PathVariable String username) {
+        transactionLogService.deleteByUsername(username);
+        return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/operation/{operation}")
-    public ResponseEntity<String> deleteByOperation(@PathVariable String operation) {
-        transactionLogService.deleteByOperation(operation);
-        return ResponseEntity.ok("Deleted logs with operation: " + operation);
+    @DeleteMapping("/by-action/{action}")
+    public ResponseEntity<Void> deleteByAction(@PathVariable String action) {
+        transactionLogService.deleteByAction(action);
+        return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/timestamp/{timestamp}")
-    public ResponseEntity<String> deleteByTimestamp(@PathVariable String timestamp) {
-        LocalDateTime parsedTimestamp = LocalDateTime.parse(timestamp);
-        transactionLogService.deleteByTimestamp(parsedTimestamp);
-        return ResponseEntity.ok("Deleted logs with timestamp: " + timestamp);
+    @DeleteMapping("/by-asset/{assetId}")
+    public ResponseEntity<Void> deleteByAssetId(@PathVariable Long assetId) {
+        transactionLogService.deleteByAssetId(assetId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/by-base/{baseId}")
+    public ResponseEntity<Void> deleteByBaseId(@PathVariable Long baseId) {
+        transactionLogService.deleteByBaseId(baseId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/by-quantity/{quantity}")
+    public ResponseEntity<Void> deleteByQuantity(@PathVariable int quantity) {
+        transactionLogService.deleteByQuantity(quantity);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/by-timestamp")
+    public ResponseEntity<Void> deleteByTimestamp(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime timestamp) {
+        transactionLogService.deleteByTimestamp(timestamp);
+        return ResponseEntity.noContent().build();
     }
 }
