@@ -25,12 +25,24 @@ public class TransactionLogService {
         return transactionLogRepository.findById(id);
     }
 
-    public List<TransactionLog> getLogsByUser(String user) {
-        return transactionLogRepository.findByUser(user);
+    public List<TransactionLog> getLogsByUsername(String username) {
+        return transactionLogRepository.findByUsername(username);
     }
 
-    public List<TransactionLog> getLogsByOperation(String operation) {
-        return transactionLogRepository.findByOperation(operation);
+    public List<TransactionLog> getLogsByAction(String action) {
+        return transactionLogRepository.findByAction(action);
+    }
+
+    public List<TransactionLog> getLogsByAssetId(Long assetId) {
+        return transactionLogRepository.findByAssetId(assetId);
+    }
+
+    public List<TransactionLog> getLogsByBaseId(Long baseId) {
+        return transactionLogRepository.findByBaseId(baseId);
+    }
+
+    public List<TransactionLog> getLogsByQuantity(int quantity) {
+        return transactionLogRepository.findByQuantity(quantity);
     }
 
     public List<TransactionLog> getLogsBetweenTimestamps(LocalDateTime start, LocalDateTime end) {
@@ -45,13 +57,28 @@ public class TransactionLogService {
         transactionLogRepository.deleteById(id);
     }
 
-    public void deleteByUser(String user) {
-        List<TransactionLog> logs = transactionLogRepository.findByUser(user);
+    public void deleteByUsername(String username) {
+        List<TransactionLog> logs = transactionLogRepository.findByUsername(username);
         transactionLogRepository.deleteAll(logs);
     }
 
-    public void deleteByOperation(String operation) {
-        List<TransactionLog> logs = transactionLogRepository.findByOperation(operation);
+    public void deleteByAction(String action) {
+        List<TransactionLog> logs = transactionLogRepository.findByAction(action);
+        transactionLogRepository.deleteAll(logs);
+    }
+
+    public void deleteByAssetId(Long assetId) {
+        List<TransactionLog> logs = transactionLogRepository.findByAssetId(assetId);
+        transactionLogRepository.deleteAll(logs);
+    }
+
+    public void deleteByBaseId(Long baseId) {
+        List<TransactionLog> logs = transactionLogRepository.findByBaseId(baseId);
+        transactionLogRepository.deleteAll(logs);
+    }
+
+    public void deleteByQuantity(int quantity) {
+        List<TransactionLog> logs = transactionLogRepository.findByQuantity(quantity);
         transactionLogRepository.deleteAll(logs);
     }
 
