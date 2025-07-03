@@ -29,9 +29,11 @@ public class AssetService {
     }
 
     public List<Asset> getAssetsByBaseName(String baseName) {
-        Optional<Base> base = baseRepository.findByName(baseName);
-        return base.map(assetRepository::findByBase)
-                   .orElseThrow(() -> new RuntimeException("Base not found with name: " + baseName));
+        List<Base> bases = baseRepository.findByName(baseName);
+        if (bases.isEmpty()) {
+            throw new RuntimeException("Base not found with name: " + baseName);
+        }
+        return assetRepository.findByBase(bases.get(0));
     }
 
     public List<Asset> getAssetsByType(String type) {
@@ -71,8 +73,11 @@ public class AssetService {
     }
 
     public void deleteByBaseName(String baseName) {
-        Base base = baseRepository.findByName(baseName)
-                .orElseThrow(() -> new RuntimeException("Base not found: " + baseName));
+        List<Base> bases = baseRepository.findByName(baseName);
+        if (bases.isEmpty()) {
+            throw new RuntimeException("Base not found: " + baseName);
+        }
+        Base base = bases.get(0);
         List<Asset> assets = assetRepository.findByBase(base);
         assetRepository.deleteAll(assets);
     }
