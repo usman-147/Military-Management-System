@@ -2,7 +2,6 @@ package com.military.asset.backend.service;
 
 import com.military.asset.backend.entity.Base;
 import com.military.asset.backend.repository.BaseRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,35 +10,30 @@ import java.util.Optional;
 @Service
 public class BaseService {
 
-    @Autowired
-    private BaseRepository baseRepository;
+    private final BaseRepository baseRepository;
+
+    public BaseService(BaseRepository baseRepository) {
+        this.baseRepository = baseRepository;
+    }
 
     public List<Base> getAllBases() {
         return baseRepository.findAll();
     }
 
-    public Optional<Base> getBaseByName(String name) {
+    public Optional<Base> getBaseById(Long id) {
+        return baseRepository.findById(id);
+    }
+
+    public List<Base> getBasesByName(String name) {
         return baseRepository.findByName(name);
     }
 
-    public Optional<Base> getBaseByLocation(String location) {
+    public List<Base> getBasesByLocation(String location) {
         return baseRepository.findByLocation(location);
     }
 
-    public boolean existsByName(String name) {
-        return baseRepository.existsByName(name);
-    }
-
-    public boolean existsByLocation(String location) {
-        return baseRepository.existsByLocation(location);
-    }
-
     public Base createBase(Base base) {
-        if (!baseRepository.existsByName(base.getName())) {
-            return baseRepository.save(base);
-        } else {
-            throw new RuntimeException("Base with name already exists: " + base.getName());
-        }
+        return baseRepository.save(base);
     }
 
     public void deleteBaseById(Long id) {
@@ -47,16 +41,12 @@ public class BaseService {
     }
 
     public void deleteByName(String name) {
-        Optional<Base> base = baseRepository.findByName(name);
-        base.ifPresent(baseRepository::delete);
+        List<Base> bases = baseRepository.findByName(name);
+        baseRepository.deleteAll(bases);
     }
 
     public void deleteByLocation(String location) {
-        Optional<Base> base = baseRepository.findByLocation(location);
-        base.ifPresent(baseRepository::delete);
-    }
-
-    public void deleteAllBases() {
-        baseRepository.deleteAll();
+        List<Base> bases = baseRepository.findByLocation(location);
+        baseRepository.deleteAll(bases);
     }
 }

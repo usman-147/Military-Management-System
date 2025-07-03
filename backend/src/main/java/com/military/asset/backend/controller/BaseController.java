@@ -2,7 +2,8 @@ package com.military.asset.backend.controller;
 
 import com.military.asset.backend.entity.Base;
 import com.military.asset.backend.service.BaseService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,53 +15,60 @@ import java.util.Optional;
 @CrossOrigin(origins = "*")
 public class BaseController {
 
-    @Autowired
-    private BaseService baseService;
+    private final BaseService baseService;
+
+    public BaseController(BaseService baseService) {
+        this.baseService = baseService;
+    }
+
+    @RequestMapping(method = RequestMethod.OPTIONS)
+    public ResponseEntity<?> handleOptions() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Access-Control-Allow-Origin", "*");
+        headers.add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
+        headers.add("Access-Control-Allow-Headers", "Content-Type, Authorization");
+        return new ResponseEntity<>(headers, HttpStatus.OK);
+    }
 
     @GetMapping
     public List<Base> getAllBases() {
         return baseService.getAllBases();
     }
 
+    @GetMapping("/{id}")
+    public Optional<Base> getBaseById(@PathVariable Long id) {
+        return baseService.getBaseById(id);
+    }
+
     @GetMapping("/name/{name}")
-    public ResponseEntity<Base> getBaseByName(@PathVariable String name) {
-        Optional<Base> base = baseService.getBaseByName(name);
-        return base.map(ResponseEntity::ok)
-                   .orElseGet(() -> ResponseEntity.notFound().build());
+    public List<Base> getBasesByName(@PathVariable String name) {
+        return baseService.getBasesByName(name);
     }
 
     @GetMapping("/location/{location}")
-    public ResponseEntity<Base> getBaseByLocation(@PathVariable String location) {
-        Optional<Base> base = baseService.getBaseByLocation(location);
-        return base.map(ResponseEntity::ok)
-                   .orElseGet(() -> ResponseEntity.notFound().build());
+    public List<Base> getBasesByLocation(@PathVariable String location) {
+        return baseService.getBasesByLocation(location);
     }
 
     @PostMapping
-    public ResponseEntity<Base> createBase(@RequestBody Base base) {
-        try {
-            Base saved = baseService.createBase(base);
-            return ResponseEntity.ok(saved);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(null);
-        }
+    public Base createBase(@RequestBody Base base) {
+        return baseService.createBase(base);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteBaseById(@PathVariable Long id) {
+    public void deleteBaseById(@PathVariable Long id) {
         baseService.deleteBaseById(id);
-        return ResponseEntity.ok("Deleted base with ID: " + id);
     }
 
     @DeleteMapping("/name/{name}")
-    public ResponseEntity<String> deleteBaseByName(@PathVariable String name) {
+    public ResponseEntity<String> deleteByName(@PathVariable String name) {
         baseService.deleteByName(name);
-        return ResponseEntity.ok("Deleted base with Name: " + name);
+        return ResponseEntity.ok("Deleted base(s) with name: " + name);
     }
 
     @DeleteMapping("/location/{location}")
-    public ResponseEntity<String> deleteBaseByLocation(@PathVariable String location) {
+    public ResponseEntity<String> deleteByLocation(@PathVariable String location) {
         baseService.deleteByLocation(location);
-        return ResponseEntity.ok("Deleted base with Location: " + location);
+        return ResponseEntity.ok("Deleted base(s) with location: " + location);
     }
 }
