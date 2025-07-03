@@ -47,4 +47,25 @@ public class AssetService {
     public void deleteAsset(Long id) {
         assetRepository.deleteById(id);
     }
+
+    public List<Asset> findByType(String type) {
+        return assetRepository.findByType(type);
+    }
+
+    public List<Asset> findByName(String name) {
+        return assetRepository.findByName(name);
+    }
+
+    public List<Asset> findByQuantity(int quantity) {
+        return assetRepository.findByQuantity(quantity);
+    }
+
+    public List<Asset> findByBaseLocation(String baseLocation) {
+        return assetRepository.findByBaseLocation(baseLocation);
+    }
+
+    public void deleteAll(List<Asset> assets) {
+        assetRepository.deleteAll(assets);
+    }
+
 }
