@@ -7,7 +7,7 @@ import com.military.asset.backend.repository.AssetRepository;
 import com.military.asset.backend.repository.BaseRepository;
 import com.military.asset.backend.repository.TransferRepository;
 import org.springframework.stereotype.Service;
-
+import com.military.asset.backend.annotation.Loggable;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -59,6 +59,7 @@ public class TransferService {
         return transferRepository.findByTimestampBetween(start, end);
     }
 
+    @Loggable
     public Transfer createTransfer(Transfer transfer) {
         return transferRepository.save(transfer);
     }

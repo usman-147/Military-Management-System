@@ -4,7 +4,7 @@ import com.military.asset.backend.entity.Assignment;
 import com.military.asset.backend.enums.AssignmentType;
 import com.military.asset.backend.repository.AssignmentRepository;
 import org.springframework.stereotype.Service;
-
+import com.military.asset.backend.annotation.Loggable;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +26,7 @@ public class AssignmentService {
         return assignmentRepository.findById(id);
     }
 
+    @Loggable
     public Assignment createAssignment(Assignment assignment) {
         return assignmentRepository.save(assignment);
     }

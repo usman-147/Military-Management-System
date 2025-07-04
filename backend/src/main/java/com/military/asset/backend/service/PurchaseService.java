@@ -7,7 +7,7 @@ import com.military.asset.backend.repository.AssetRepository;
 import com.military.asset.backend.repository.BaseRepository;
 import com.military.asset.backend.repository.PurchaseRepository;
 import org.springframework.stereotype.Service;
-
+import com.military.asset.backend.annotation.Loggable;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -53,6 +53,7 @@ public class PurchaseService {
         return purchaseRepository.findByDate(date);
     }
 
+    @Loggable
     public Purchase createPurchase(Purchase purchase) {
         return purchaseRepository.save(purchase);
     }

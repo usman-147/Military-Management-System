@@ -4,7 +4,7 @@ import com.military.asset.backend.entity.Expenditure;
 import com.military.asset.backend.enums.AssignmentType;
 import com.military.asset.backend.repository.ExpenditureRepository;
 import org.springframework.stereotype.Service;
-
+import com.military.asset.backend.annotation.Loggable;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -46,6 +46,7 @@ public class ExpenditureService {
         return expenditureRepository.findByDate(date);
     }
 
+    @Loggable
     public Expenditure createExpenditure(Expenditure expenditure) {
         return expenditureRepository.save(expenditure);
     }
