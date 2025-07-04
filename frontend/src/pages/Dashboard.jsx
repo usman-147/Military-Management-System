@@ -15,6 +15,8 @@ import {
 
 import { fetchBases, fetchAssets } from "../api/api";
 
+import NetMovementModal from "./NetMovementModal";
+
 const Dashboard = () => {
   const [baseId, setBaseId] = useState(1);
   const [assetId, setAssetId] = useState(1);
@@ -31,6 +33,23 @@ const Dashboard = () => {
 
   const [bases, setBases] = useState([]);
   const [assets, setAssets] = useState([]);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedDay, setSelectedDay] = useState({
+    date: "2025-07-03",
+    base: "Base Alpha",
+    asset: "AK-47",
+    purchases: 100,
+    transfersIn: 50,
+    transfersOut: 30,
+  });
+
+  const openModal = (dayData) => {
+    setSelectedDay(dayData);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => setIsModalOpen(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -79,6 +98,12 @@ const Dashboard = () => {
 
     initFilters();
   }, [baseId, assetId, startDate, endDate]);
+
+  <NetMovementModal
+    isOpen={isModalOpen}
+    onClose={closeModal}
+    details={selectedDay}
+  />;
 
   return (
     <div className="p-6 space-y-6">
@@ -135,35 +160,13 @@ const Dashboard = () => {
       </section>
 
       {/* 🔷 Chart Section */}
-      <section className="bg-white p-6 rounded-2xl shadow">
-        <h2 className="text-xl font-semibold mb-4">📊 Net Movement Chart</h2>
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={data}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Line
-              type="monotone"
-              dataKey="totalPurchases"
-              stroke="#8884d8"
-              name="Purchases"
-            />
-            <Line
-              type="monotone"
-              dataKey="totalTransfersIn"
-              stroke="#82ca9d"
-              name="Transfers In"
-            />
-            <Line
-              type="monotone"
-              dataKey="totalTransfersOut"
-              stroke="#ff7300"
-              name="Transfers Out"
-            />
-          </LineChart>
-        </ResponsiveContainer>
+      <section className="bg-white p-6 rounded-2xl shadow h-64 flex items-center justify-center text-gray-500">
+        <button
+          onClick={() => openModal(selectedDay)}
+          className="ml-4 px-4 py-2 bg-blue-600 text-white rounded-xl"
+        >
+          View Details
+        </button>
       </section>
     </div>
   );
