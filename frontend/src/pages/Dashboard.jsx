@@ -14,7 +14,6 @@ import {
 } from "recharts";
 
 import { fetchBases, fetchAssets } from "../api/api";
-
 import NetMovementModal from "./NetMovementModal";
 
 const Dashboard = () => {
@@ -35,14 +34,7 @@ const Dashboard = () => {
   const [assets, setAssets] = useState([]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedDay, setSelectedDay] = useState({
-    date: "2025-07-03",
-    base: "Base Alpha",
-    asset: "AK-47",
-    purchases: 100,
-    transfersIn: 50,
-    transfersOut: 30,
-  });
+  const [selectedDay, setSelectedDay] = useState(null);
 
   const openModal = (dayData) => {
     setSelectedDay(dayData);
@@ -62,6 +54,8 @@ const Dashboard = () => {
         );
         const mapped = result.map((row) => ({
           date: row.date,
+          baseId: row.baseId,
+          assetId: row.assetId,
           totalPurchases: row.totalPurchases,
           totalTransfersIn: row.totalTransfersIn,
           totalTransfersOut: row.totalTransfersOut,
@@ -79,7 +73,6 @@ const Dashboard = () => {
         console.error("Dashboard chart load failed", err);
       }
     };
-    loadData();
 
     const initFilters = async () => {
       try {
@@ -97,13 +90,8 @@ const Dashboard = () => {
     };
 
     initFilters();
+    loadData();
   }, [baseId, assetId, startDate, endDate]);
-
-  <NetMovementModal
-    isOpen={isModalOpen}
-    onClose={closeModal}
-    details={selectedDay}
-  />;
 
   return (
     <div className="p-6 space-y-6">
@@ -111,16 +99,7 @@ const Dashboard = () => {
       <h1 className="text-3xl font-bold">Military Dashboard</h1>
 
       {/* 🔷 Filters Section */}
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-gray-100 p-4 rounded-2xl shadow">Base Dropdown</div>
-        <div className="bg-gray-100 p-4 rounded-2xl shadow">Asset Dropdown</div>
-        <div className="bg-gray-100 p-4 rounded-2xl shadow">
-          Date Range Picker
-        </div>
-      </section>
-
-      {/* 🔷 Metrics Cards Section */}
-      <section className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <section className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <select
           className="bg-white p-3 rounded-2xl shadow"
           value={baseId}
@@ -159,15 +138,73 @@ const Dashboard = () => {
         />
       </section>
 
-      {/* 🔷 Chart Section */}
-      <section className="bg-white p-6 rounded-2xl shadow h-64 flex items-center justify-center text-gray-500">
-        <button
-          onClick={() => openModal(selectedDay)}
-          className="ml-4 px-4 py-2 bg-blue-600 text-white rounded-xl"
-        >
-          View Details
-        </button>
+      {/* 🔷 Metrics Section */}
+      <section className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="bg-white p-4 rounded-2xl shadow text-center">
+          📦 Purchases: {stats.totalPurchases}
+        </div>
+        <div className="bg-white p-4 rounded-2xl shadow text-center">
+          🚚 Transfers In: {stats.totalTransfersIn}
+        </div>
+        <div className="bg-white p-4 rounded-2xl shadow text-center">
+          📤 Transfers Out: {stats.totalTransfersOut}
+        </div>
       </section>
+
+      {/* 🔷 Net Movement Table */}
+      <section className="bg-white p-6 rounded-2xl shadow">
+        <h3 className="text-lg font-semibold mb-4">📊 Net Movement Summary</h3>
+        <div className="overflow-x-auto">
+          <table className="min-w-full text-sm text-left">
+            <thead>
+              <tr className="text-gray-600 border-b">
+                <th className="py-2 px-4">Date</th>
+                <th className="py-2 px-4">Purchases</th>
+                <th className="py-2 px-4">Transfers In</th>
+                <th className="py-2 px-4">Transfers Out</th>
+                <th className="py-2 px-4">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.map((entry, idx) => (
+                <tr key={idx} className="border-b hover:bg-gray-50">
+                  <td className="py-2 px-4">{entry.date}</td>
+                  <td className="py-2 px-4">{entry.totalPurchases}</td>
+                  <td className="py-2 px-4">{entry.totalTransfersIn}</td>
+                  <td className="py-2 px-4">{entry.totalTransfersOut}</td>
+                  <td className="py-2 px-4">
+                    <button
+                      onClick={() =>
+                        openModal({
+                          date: entry.date,
+                          base: bases.find((b) => b.id === baseId)?.name || "",
+                          asset:
+                            assets.find((a) => a.id === assetId)?.name || "",
+                          purchases: entry.totalPurchases,
+                          transfersIn: entry.totalTransfersIn,
+                          transfersOut: entry.totalTransfersOut,
+                        })
+                      }
+                      className="text-blue-600 hover:underline"
+                    >
+                      View Details
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      {/* 🔷 Modal Component */}
+      {isModalOpen && (
+        <NetMovementModal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          details={selectedDay}
+        />
+      )}
     </div>
   );
 };
