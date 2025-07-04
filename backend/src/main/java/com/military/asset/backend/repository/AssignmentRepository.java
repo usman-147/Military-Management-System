@@ -14,18 +14,17 @@ import java.util.Optional;
 @Repository
 public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
 
-    List<Assignment> findByAssetId(Long assetId);
+    List<Assignment> findByAsset_Id(Long assetId);
     List<Assignment> findByAssignedTo(String assignedTo);
     List<Assignment> findByQuantity(int quantity);
     List<Assignment> findByType(AssignmentType type);
     List<Assignment> findByDate(LocalDate date);
 
-   @Query("SELECT SUM(a.quantity) FROM Assignment a WHERE a.base.id = :baseId AND a.asset.id = :assetId AND a.date BETWEEN :start AND :end")
+    @Query("SELECT SUM(a.quantity) FROM Assignment a WHERE a.base.id = :baseId AND a.asset.id = :assetId AND a.date BETWEEN :start AND :end")
     Optional<Integer> sumQuantityByBaseAndAssetAndDate(
         @Param("baseId") Long baseId,
         @Param("assetId") Long assetId,
         @Param("start") LocalDate start,
         @Param("end") LocalDate end
     );
-
 }
