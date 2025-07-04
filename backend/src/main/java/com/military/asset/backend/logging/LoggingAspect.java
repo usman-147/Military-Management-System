@@ -2,10 +2,11 @@ package com.military.asset.backend.logging;
 
 import com.military.asset.backend.entity.TransactionLog;
 import com.military.asset.backend.repository.TransactionLogRepository;
-import jakarta.servlet.http.HttpServletRequest;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -15,16 +16,14 @@ import java.time.LocalDateTime;
 public class LoggingAspect {
 
     private final TransactionLogRepository transactionLogRepository;
-    private final HttpServletRequest request;
 
-    public LoggingAspect(TransactionLogRepository transactionLogRepository, HttpServletRequest request) {
+    public LoggingAspect(TransactionLogRepository transactionLogRepository) {
         this.transactionLogRepository = transactionLogRepository;
-        this.request = request;
     }
 
     @AfterReturning("execution(* com.military.asset.backend.controller.*.*(..))")
     public void logAfterOperation(JoinPoint joinPoint) {
-        String methodName = joinPoint.getSignature().getName().toUpperCase(); // e.g. "createPurchase"
+        String methodName = joinPoint.getSignature().getName().toUpperCase();
 
         String action = null;
         if (methodName.contains("PURCHASE")) action = "PURCHASE";
@@ -39,7 +38,6 @@ public class LoggingAspect {
         Long assetId = null;
         Long baseId = null;
         int quantity = 0;
-        String username = request.getParameter("username");
 
         for (Object arg : args) {
             if (arg == null) continue;
@@ -56,12 +54,18 @@ public class LoggingAspect {
             } catch (Exception ignored) {}
         }
 
+        String username = "SYSTEM";
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.isAuthenticated()) {
+            username = auth.getName();
+        }
+
         TransactionLog log = new TransactionLog();
         log.setAction(action);
         log.setAssetId(assetId);
         log.setBaseId(baseId);
         log.setQuantity(quantity);
-        log.setUsername(username != null ? username : "UNKNOWN");
+        log.setUsername(username);
         log.setTimestamp(LocalDateTime.now());
 
         transactionLogRepository.save(log);
