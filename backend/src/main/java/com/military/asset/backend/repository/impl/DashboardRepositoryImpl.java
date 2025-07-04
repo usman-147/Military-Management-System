@@ -15,6 +15,7 @@ public class DashboardRepositoryImpl implements DashboardRepository {
     @PersistenceContext
     private EntityManager entityManager;
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<Object[]> getNetMovementDetails(Long baseId, Long assetId, LocalDate start, LocalDate end) {
         String sql = """

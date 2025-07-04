@@ -1,8 +1,8 @@
 package com.military.asset.backend.entity;
 
 import com.military.asset.backend.enums.AssignmentType;
-
 import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -13,39 +13,86 @@ public class Assignment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long assetId;
+    @ManyToOne
+    @JoinColumn(name = "base_id")
+    private Base base;
+
+    @ManyToOne
+    @JoinColumn(name = "asset_id")
+    private Asset asset;
+
+    @Column(name = "assigned_to")
     private String assignedTo;
-    private int quantity;
+
+    @Column(name = "quantity")
+    private Integer quantity;
 
     @Enumerated(EnumType.STRING)
-    private AssignmentType type; // ASSIGN or EXPEND
+    private AssignmentType type;
 
+    @Column(name = "date")
     private LocalDateTime date;
 
     public Assignment() {}
 
-    public Assignment(Long assetId, String assignedTo, int quantity, AssignmentType type, LocalDateTime date) {
-        this.assetId = assetId;
+    public Assignment(Base base, Asset asset, String assignedTo, Integer quantity, AssignmentType type, LocalDateTime date) {
+        this.base = base;
+        this.asset = asset;
         this.assignedTo = assignedTo;
         this.quantity = quantity;
         this.type = type;
         this.date = date;
     }
 
-    public Long getId() { return id; }
+    public Long getId() {
+        return id;
+    }
 
-    public Long getAssetId() { return assetId; }
-    public void setAssetId(Long assetId) { this.assetId = assetId; }
+    public Base getBase() {
+        return base;
+    }
 
-    public String getAssignedTo() { return assignedTo; }
-    public void setAssignedTo(String assignedTo) { this.assignedTo = assignedTo; }
+    public void setBase(Base base) {
+        this.base = base;
+    }
 
-    public int getQuantity() { return quantity; }
-    public void setQuantity(int quantity) { this.quantity = quantity; }
+    public Asset getAsset() {
+        return asset;
+    }
 
-    public AssignmentType getType() { return type; }
-    public void setType(AssignmentType type) { this.type = type; }
+    public void setAsset(Asset asset) {
+        this.asset = asset;
+    }
 
-    public LocalDateTime getDate() { return date; }
-    public void setDate(LocalDateTime date) { this.date = date; }
+    public String getAssignedTo() {
+        return assignedTo;
+    }
+
+    public void setAssignedTo(String assignedTo) {
+        this.assignedTo = assignedTo;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
+    public AssignmentType getType() {
+        return type;
+    }
+
+    public void setType(AssignmentType type) {
+        this.type = type;
+    }
+
+    public LocalDateTime getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDateTime date) {
+        this.date = date;
+    }
 }
