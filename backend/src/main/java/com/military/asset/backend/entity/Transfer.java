@@ -2,6 +2,7 @@ package com.military.asset.backend.entity;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -28,14 +29,18 @@ public class Transfer {
 
     private LocalDateTime timestamp;
 
+    @Column(name = "date")
+    private LocalDate date;
+
     public Transfer() {}
 
-    public Transfer(Asset asset, Base fromBase, Base toBase, int quantity, LocalDateTime timestamp) {
+    public Transfer(Asset asset, Base fromBase, Base toBase, int quantity, LocalDateTime timestamp, LocalDate date) {
         this.asset = asset;
         this.fromBase = fromBase;
         this.toBase = toBase;
         this.quantity = quantity;
         this.timestamp = timestamp;
+        this.date=date;
     }
 
     public Long getId() {
@@ -81,4 +86,13 @@ public class Transfer {
     public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
     }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
 }

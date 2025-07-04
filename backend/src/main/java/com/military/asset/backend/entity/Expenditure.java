@@ -13,7 +13,13 @@ public class Expenditure {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long assetId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "base_id", nullable = false)
+    private Base base;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "asset_id", nullable = false)
+    private Asset asset;
 
     private String assignedTo;
 
@@ -26,8 +32,9 @@ public class Expenditure {
 
     public Expenditure() {}
 
-    public Expenditure(Long assetId, String assignedTo, int quantity, AssignmentType type, LocalDate date) {
-        this.assetId = assetId;
+    public Expenditure(Base base, Asset asset, String assignedTo, int quantity, AssignmentType type, LocalDate date) {
+        this.base = base;
+        this.asset = asset;
         this.assignedTo = assignedTo;
         this.quantity = quantity;
         this.type = type;
@@ -38,12 +45,20 @@ public class Expenditure {
         return id;
     }
 
-    public Long getAssetId() {
-        return assetId;
+    public Base getBase() {
+        return base;
     }
 
-    public void setAssetId(Long assetId) {
-        this.assetId = assetId;
+    public void setBase(Base base) {
+        this.base = base;
+    }
+
+    public Asset getAsset() {
+        return asset;
+    }
+
+    public void setAsset(Asset asset) {
+        this.asset = asset;
     }
 
     public String getAssignedTo() {
