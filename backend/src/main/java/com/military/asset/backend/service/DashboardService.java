@@ -16,15 +16,18 @@ public class DashboardService {
     private final TransferRepository transferRepository;
     private final AssignmentRepository assignmentRepository;
     private final ExpenditureRepository expenditureRepository;
+    private final DashboardRepository dashboardRepository;
 
     public DashboardService(PurchaseRepository purchaseRepository,
                             TransferRepository transferRepository,
                             AssignmentRepository assignmentRepository,
-                            ExpenditureRepository expenditureRepository) {
+                            ExpenditureRepository expenditureRepository,
+                            DashboardRepository dashboardRepository) {
         this.purchaseRepository = purchaseRepository;
         this.transferRepository = transferRepository;
         this.assignmentRepository = assignmentRepository;
         this.expenditureRepository = expenditureRepository;
+        this.dashboardRepository = dashboardRepository;
     }
 
     public DashboardStatsDTO calculateStats(Long baseId, Long assetId, LocalDate startDate, LocalDate endDate) {
