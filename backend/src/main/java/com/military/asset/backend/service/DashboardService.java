@@ -3,8 +3,11 @@ package com.military.asset.backend.service;
 import com.military.asset.backend.dto.DashboardStatsDTO;
 import com.military.asset.backend.repository.*;
 import org.springframework.stereotype.Service;
+import com.military.asset.backend.dto.NetMovementDetailDTO;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class DashboardService {
@@ -36,5 +39,20 @@ public class DashboardService {
         int closingBalance = openingBalance + netMovement - assigned - expended;
 
         return new DashboardStatsDTO(openingBalance, closingBalance, netMovement, assigned, expended);
+    }
+
+    public List<NetMovementDetailDTO> getNetMovementDetails(Long baseId, Long assetId, LocalDate start, LocalDate end) {
+        List<Object[]> rawData = dashboardRepository.getNetMovementDetails(baseId, assetId, start, end);
+        List<NetMovementDetailDTO> result = new ArrayList<>();
+
+        for (Object[] row : rawData) {
+            LocalDate date = (LocalDate) row[2];
+            int purchases = ((Number) row[3]).intValue();
+            int transfersIn = ((Number) row[4]).intValue();
+            int transfersOut = ((Number) row[5]).intValue();
+            result.add(new NetMovementDetailDTO(date, purchases, transfersIn, transfersOut));
+        }
+
+        return result;
     }
 }
