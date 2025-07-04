@@ -5,6 +5,7 @@ import com.military.asset.backend.enums.AssignmentType;
 import com.military.asset.backend.repository.AssignmentRepository;
 import org.springframework.stereotype.Service;
 import com.military.asset.backend.annotation.Loggable;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -36,7 +37,7 @@ public class AssignmentService {
     }
 
     public List<Assignment> getByAssetId(Long assetId) {
-        return assignmentRepository.findByAssetId(assetId);
+        return assignmentRepository.findByAsset_Id(assetId);
     }
 
     public List<Assignment> getByAssignedTo(String assignedTo) {
@@ -56,7 +57,7 @@ public class AssignmentService {
     }
 
     public void deleteByAssetId(Long assetId) {
-        List<Assignment> list = assignmentRepository.findByAssetId(assetId);
+        List<Assignment> list = assignmentRepository.findByAsset_Id(assetId);
         assignmentRepository.deleteAll(list);
     }
 
