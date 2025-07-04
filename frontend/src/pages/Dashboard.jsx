@@ -13,6 +13,8 @@ import {
   Legend,
 } from "recharts";
 
+import { fetchBases, fetchAssets } from "../api/api";
+
 const Dashboard = () => {
   const [baseId, setBaseId] = useState(1);
   const [assetId, setAssetId] = useState(1);
@@ -26,6 +28,9 @@ const Dashboard = () => {
   });
 
   const [data, setData] = useState([]);
+
+  const [bases, setBases] = useState([]);
+  const [assets, setAssets] = useState([]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -56,6 +61,23 @@ const Dashboard = () => {
       }
     };
     loadData();
+
+    const initFilters = async () => {
+      try {
+        const [basesRes, assetsRes] = await Promise.all([
+          fetchBases(),
+          fetchAssets(),
+        ]);
+        setBases(basesRes);
+        setAssets(assetsRes);
+        if (basesRes.length > 0) setBaseId(basesRes[0].id);
+        if (assetsRes.length > 0) setAssetId(assetsRes[0].id);
+      } catch (err) {
+        console.error("Init filters failed", err);
+      }
+    };
+
+    initFilters();
   }, [baseId, assetId, startDate, endDate]);
 
   return (
@@ -74,15 +96,42 @@ const Dashboard = () => {
 
       {/* 🔷 Metrics Cards Section */}
       <section className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white p-4 rounded-2xl shadow text-center">
-          📦 Total Purchases: {stats.totalPurchases}
-        </div>
-        <div className="bg-white p-4 rounded-2xl shadow text-center">
-          🚚 Transfers In: {stats.totalTransfersIn}
-        </div>
-        <div className="bg-white p-4 rounded-2xl shadow text-center">
-          📤 Transfers Out: {stats.totalTransfersOut}
-        </div>
+        <select
+          className="bg-white p-3 rounded-2xl shadow"
+          value={baseId}
+          onChange={(e) => setBaseId(Number(e.target.value))}
+        >
+          {bases.map((b) => (
+            <option key={b.id} value={b.id}>
+              {b.name}
+            </option>
+          ))}
+        </select>
+
+        <select
+          className="bg-white p-3 rounded-2xl shadow"
+          value={assetId}
+          onChange={(e) => setAssetId(Number(e.target.value))}
+        >
+          {assets.map((a) => (
+            <option key={a.id} value={a.id}>
+              {a.name}
+            </option>
+          ))}
+        </select>
+
+        <input
+          type="date"
+          className="bg-white p-3 rounded-2xl shadow"
+          value={startDate}
+          onChange={(e) => setStartDate(e.target.value)}
+        />
+        <input
+          type="date"
+          className="bg-white p-3 rounded-2xl shadow"
+          value={endDate}
+          onChange={(e) => setEndDate(e.target.value)}
+        />
       </section>
 
       {/* 🔷 Chart Section */}
