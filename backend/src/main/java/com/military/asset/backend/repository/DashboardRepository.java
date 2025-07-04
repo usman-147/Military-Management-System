@@ -4,10 +4,11 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
-public interface DashboardRepository extends Repository<Object, Long> {
+@Repository
+public interface DashboardRepository {
 
     @Query(value = """
         SELECT
