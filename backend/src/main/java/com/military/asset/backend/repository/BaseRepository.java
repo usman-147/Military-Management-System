@@ -8,6 +8,7 @@ import java.util.List;
 
 @Repository
 public interface BaseRepository extends JpaRepository<Base, Long> {
+
     List<Base> findByName(String name);
     List<Base> findByLocation(String location);
     boolean existsByName(String name);

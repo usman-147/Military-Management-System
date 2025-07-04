@@ -9,6 +9,7 @@ import java.util.List;
 
 @Repository
 public interface TransactionLogRepository extends JpaRepository<TransactionLog, Long> {
+
     List<TransactionLog> findByUsername(String username);
     List<TransactionLog> findByAction(String action);
     List<TransactionLog> findByAssetId(Long assetId);
